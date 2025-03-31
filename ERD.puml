@@ -1,0 +1,21 @@
+@startuml
+class item
+class suplier
+class order{
+
+}
+class user
+class warehouse
+
+class transfre{
+    itemID[]
+    From 'Warehouse'
+    To 'user/warehouse'
+}
+
+item "*"--"*" warehouse
+item "*"-- suplier
+item "*"--"*" orders
+order --"*" warehouse
+user --"*" order
+@enduml
