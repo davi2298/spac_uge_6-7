@@ -1,20 +1,36 @@
-using dotenv.net;
+using DotEnv.Core;
+using Lagersystem.Utilitys;
+using Microsoft.EntityFrameworkCore;
 class Prtogram
 {
     public static void Main(string[] args)
     {
+        // load .env
+        new EnvLoader().Load();
 
+        // generate connection strign given .env variables
+        var dbuser = EnvReader.Instance["DBUSER"];
+        var database = EnvReader.Instance["DBNAME"];
+        var dbpassword = EnvReader.Instance["DBPASSWORD"];
+        var connectionString = $"server=localhost;database={database};user={dbuser};password={dbpassword}";
 
-        DotEnv.Load(options: new DotEnvOptions(probeForEnv: true, probeLevelsToSearch: 2));
+        // setting up servieces
+        var services = new ServiceCollection();
+        services.AddDbContext<SupplyerContext>(options => options.UseMySQL(connectionString: connectionString));
+        // services.AddDbContext<WarehouseContext>(options => options.UseMySQL(connectionString)); // uncomment when implemented
+        // services.AddDbContext<ItemContext>(options => options.UseMySQL(connectionString)); // uncomment when implemented
 
-
+        var serviceProvider = services.BuildServiceProvider();
+        var tmp = serviceProvider.GetRequiredService<SupplyerContext>();
         var builder = WebApplication.CreateBuilder(args);
 
+
         // Add services to the container.
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
 
         var app = builder.Build();
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
