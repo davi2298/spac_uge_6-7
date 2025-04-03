@@ -1,29 +1,31 @@
 using DotEnv.Core;
+using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
 using Microsoft.EntityFrameworkCore;
 public class Program
 {
     public static void Main(string[] args)
     {
-        // load .env
-        var connectionString = GetConnectionString();
-        // setting up servieces
-        var services = new ServiceCollection();
-        services.AddDbContext<SupplyerContext>(options => options.UseMySQL(connectionString: connectionString));
-        // services.AddDbContext<WarehouseContext>(options => options.UseMySQL(connectionString)); // uncomment when implemented
-        // services.AddDbContext<ItemContext>(options => options.UseMySQL(connectionString)); // uncomment when implemented
 
-        var serviceProvider = services.BuildServiceProvider();
-        var tmp = serviceProvider.GetRequiredService<SupplyerContext>();
         var builder = WebApplication.CreateBuilder(args);
 
 
         // Add services to the container.
+        // builder.Services.AddDbContext<LagerContext>(options => options.UseMySQL(connectionString: GetConnectionString()));
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
         var app = builder.Build();
+        // builder.Services.Configure<LagerContext>(options => options.)
+        using (var dbContext = new LagerContext())
+        {
+            dbContext.Database.EnsureCreated();
+            if (!dbContext.Warehouses.Any())
+            {
 
+                Setup(dbContext);
+            }
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -72,5 +74,38 @@ public class Program
         var dbpassword = EnvReader.Instance["DBPASSWORD"];
         var connectionString = $"server=localhost;database={database};user={dbuser};password={dbpassword}";
         return connectionString;
+    }
+
+    private static void Setup(LagerContext context)
+    {
+        var supplyerNames = new[]
+        {
+            "Ana", "Bob", "Carl", "Dennis", "Erik"
+        };
+        var itemNames = new[]
+        {
+            "Alpha", "Beta", "Gamma", "Delta"
+        };
+        IList<Supplier> supplyers = [];
+        IList<Item> items = [];
+        foreach (var name in supplyerNames)
+        {
+            supplyers.Add(new Supplier(name));
+        }
+        var wareHouse = new Warehouse();
+        foreach (var itemName in itemNames)
+        {
+            var item = new Item(itemName);
+            var itemSupplier = supplyers[Random.Shared.Next(supplyers.Count-1)];
+            item.Supplier = itemSupplier;
+            item.Dimensions = new Dimensions(item, Random.Shared.Next(10, 100), Random.Shared.Next(10, 100), Random.Shared.Next(10, 100));
+            itemSupplier.Items.Add(item);
+            wareHouse.ItemLocations.Add(new Location(item, "1", $"{Random.Shared.Next(100)}", $"{itemName}"));
+        }
+
+        context.Warehouses.Add(wareHouse);
+        context.Items.AddRange(items);
+        context.Suppliers.AddRange(supplyers);
+        context.SaveChanges();
     }
 }
