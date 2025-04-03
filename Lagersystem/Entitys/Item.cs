@@ -1,22 +1,28 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Lagersystem.Entitys;
 public class Item : AEntity
 {
     public string Name { get; init; }
-    public string Sku { get; set; }
-    public string Barcode { get; set; }
-    public string Category { get; set; }
-    public string Description { get; set; }
-    public int Quantity { get; set; }
-    public Warehouse Location { get; set; }
-    public Supplier Supplier { get; set; }
-    public float Price { get; set; }
-    public float Cost { get; set; }
-    public float Weight { get; set; }
-    public Dimensions Dimensions { get; set; }
-    public DateTime Expiration_date { get; set; }
-    public DateTime Date_received { get; set; }
-    public DateTime Last_updated { get; set; }
-    public string Status { get; set; }
+    public string? Sku { get; set; }
+    public string? Barcode { get; set; }
+    public string? Category { get; set; }
+    public string? Description { get; set; }
+    public int? Quantity { get; set; }
+    public Warehouse? Location { get; set; }
+    public Supplier? Supplier { get; set; }
+    public float? Price { get; set; }
+    public float? Cost { get; set; }
+    public float? Weight { get; set; }
+    public Dimensions? Dimensions { get; set; }
+    public DateTime? Expiration_date { get; set; }
+    public DateTime? Date_received { get; set; }
+    public DateTime? Last_updated { get; set; }
+    public string? Status { get; set; }
+    public Item(string name) : base(null)
+    {
+        Name = name;
+    }
     public Item(string id, string name, string sku, string barcode, string category, string description, int quantity, Warehouse location, Supplier supplier, float price, float cost, float weight, Dimensions dimensions, DateTime expiration_date, DateTime date_received, DateTime last_updated, string status) : base(id)
     {
         Name = name;
@@ -40,9 +46,24 @@ public class Item : AEntity
 
 
 
-public record Dimensions(float length, float width, float height)
+public class Dimensions
 {
-    float Length = length;
-    float Width = width;
-    float Height = height;
+    [ForeignKey("Id")]
+    public Item Item { get; set; }
+
+    public float Length { get; set; }
+    public float Width { get; set; }
+    public float Height { get; set; }
+    public Dimensions() { }
+    public Dimensions(Item item)
+    {
+        Item = item;
+    }
+    public Dimensions(Item item, float length, float width, float height)
+    {
+        Item = item;
+        Length = length;
+        Width = width;
+        Height = height;
+    }
 }
