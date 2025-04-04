@@ -18,7 +18,8 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
         var app = builder.Build();
-        // builder.Services.Configure<LagerContext>(options => options.)
+        builder.Services.AddDbContext<LagerContext>();
+        builder.Services.AddControllers();
         using (var dbContext = new LagerContext())
         {
             if (EnvReader.Instance.EnvBool("DBDEBUGGING"))
@@ -80,7 +81,6 @@ public class Program
         var connectionString = $"server=localhost;database={database};user={dbuser};password={dbpassword}";
         return connectionString;
     }
-
     private static void Setup(LagerContext context)
     {
         var pathToData = Path.Combine([TryGetSolutionDirectoryInfo().ToString() , "Lagersystem","Data"]);
