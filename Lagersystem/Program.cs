@@ -18,8 +18,6 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
         var app = builder.Build();
-        builder.Services.AddDbContext<LagerContext>();
-        builder.Services.AddControllers();
         using (var dbContext = new LagerContext())
         {
             if (EnvReader.Instance.EnvBool("DBDEBUGGING"))
@@ -38,6 +36,9 @@ public class Program
         {
             app.MapOpenApi();
         }
+        var tmp = builder.Services.AddDbContext<LagerContext>();
+
+        builder.Services.AddControllers();
 
         app.UseHttpsRedirection();
 
@@ -59,10 +60,13 @@ public class Program
             return forecast;
         })
         .WithName("GetWeatherForecast");
-        return;
         app.Run();
 
 
+    }
+    public static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<LagerContext>();
     }
     record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
     {
@@ -83,7 +87,7 @@ public class Program
     }
     private static void Setup(LagerContext context)
     {
-        var pathToData = Path.Combine([TryGetSolutionDirectoryInfo().ToString() , "Lagersystem","Data"]);
+        var pathToData = Path.Combine([TryGetSolutionDirectoryInfo().ToString(), "Lagersystem", "Data"]);
 
         AddFromSql(pathToData, "item.sql");
         AddFromSql(pathToData, "Supplier.sql");
@@ -96,9 +100,10 @@ public class Program
                 i.Supplier = context.Suppliers.ToArray()[Random.Shared.Next(context.Suppliers.Count() - 1)]
             );
 
-        while (!context.Warehouses.Any()) { // todo : do something here
+        while (!context.Warehouses.Any())
+        { // todo : do something here
         }
-        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id,(w,l) => new {Warehouse = w,Location =l} );
+        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id, (w, l) => new { Warehouse = w, Location = l });
         foreach (var warehouse in joinedWarehouses)
         {
             var tmp = warehouse.Location.Item;
