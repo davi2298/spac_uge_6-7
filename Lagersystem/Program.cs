@@ -83,11 +83,12 @@ public class Program
 
     private static void Setup(LagerContext context)
     {
-        var pathToData = TryGetSolutionDirectoryInfo() + "\\Lagersystem\\Data";
-        AddFromSql(pathToData, "\\item.sql");
-        AddFromSql(pathToData, "\\Supplier.sql");
-        AddFromSql(pathToData, "\\Warehouse.sql");
-        AddFromSql(pathToData, "\\Location.sql");
+        var pathToData = Path.Combine([TryGetSolutionDirectoryInfo().ToString() , "Lagersystem","Data"]);
+
+        AddFromSql(pathToData, "item.sql");
+        AddFromSql(pathToData, "Supplier.sql");
+        AddFromSql(pathToData, "Warehouse.sql");
+        AddFromSql(pathToData, "Location.sql");
 
 
         context.Items.ToList()
@@ -95,7 +96,8 @@ public class Program
                 i.Supplier = context.Suppliers.ToArray()[Random.Shared.Next(context.Suppliers.Count() - 1)]
             );
 
-        while (!context.Warehouses.Any()) { }
+        while (!context.Warehouses.Any()) { // todo : do something here
+        }
         var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id,(w,l) => new {Warehouse = w,Location =l} );
         foreach (var warehouse in joinedWarehouses)
         {
@@ -107,17 +109,17 @@ public class Program
 
         static void AddFromSql(string pathToData, string file)
         {
-            if (!File.Exists(pathToData + file))
+            var path = Path.Combine(pathToData, file);
+            if (!File.Exists(path))
                 return;
-            IEnumerable<string> itemLines = File.ReadAllLines(pathToData + file);
-
+            IEnumerable<string> itemLines = File.ReadAllLines(path);
             foreach (var line in itemLines)
             {
                 LagerContext.AddItemFromSQL(line, GetConnectionString());
             }
         }
     }
-    
+
     /// <summary>
     /// This is for when debugging it returns to the folder with the sln and not the debug subfolder
     /// Taken from "https://stackoverflow.com/questions/19001423/getting-path-to-the-parent-folder-of-the-solution-file-using-c-sharp"
