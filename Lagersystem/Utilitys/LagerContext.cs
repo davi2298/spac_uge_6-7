@@ -29,9 +29,6 @@ public class LagerContext : DbContext
         setupKeys<Warehouse>(modelBuilder);
         setupKeys<Item>(modelBuilder);
         setupKeys<Location>(modelBuilder);
-        // modelBuilder.Entity<Warehouse>().HasMany(e => e.ItemLocations).WithOne(e => e.Warehouse);
-        // modelBuilder.Entity<Location>().HasOne(e => e.WarehouseId).WithMany(w => w.ItemLocations).HasForeignKey(w).HasAlternateKey(["Warehouse_Id","Item_Id"]);
-        // modelBuilder.Entity<Item>().HasOne(e => e.Dimensions).WithOne   (e => e.Item)
     }
     private void setupKeys<T>(ModelBuilder modelBuilder) where T : AEntity
     {
