@@ -1,4 +1,5 @@
 using System.Net;
+using System.Threading.Tasks;
 using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -37,11 +38,12 @@ public class WarehouseController : ControllerBase
         }
     }
     [HttpPut("Create")]
-    public IActionResult Create(Warehouse warehouse)
+    public async Task<IActionResult> Create(Warehouse warehouse)
     {
         try
         {
             LagerContext.Warehouses.Add(warehouse);
+            await LagerContext.SaveChangesAsync();
             return Created();
         }
         catch (Exception ex)
@@ -50,14 +52,14 @@ public class WarehouseController : ControllerBase
         }
     }
     [HttpPost("Update/{id}")]
-    public IActionResult Update(Warehouse warehouse, string id)
+    public async Task<IActionResult> Update(Warehouse warehouse, string id)
     {
         try
         {
             var warehouseToUpdate = LagerContext.Warehouses.Find(id);
             if (warehouseToUpdate == null) { return BadRequest($"No Warehouse with id: {id}"); }
             warehouseToUpdate = warehouse;
-            LagerContext.SaveChangesAsync();
+            await LagerContext.SaveChangesAsync();
             return Ok();
         }
         catch
@@ -66,13 +68,14 @@ public class WarehouseController : ControllerBase
         }
     }
     [HttpDelete("Delete/{id}")]
-    public IActionResult Delete(string id)
+    public async Task<IActionResult> Delete(string id)
     {
         try
         {
             var warehouse = LagerContext.Warehouses.Find(id);
             if (warehouse == null) { return BadRequest($"No warehouse with the id: {id}"); }
             LagerContext.Warehouses.Remove(warehouse);
+            await LagerContext.SaveChangesAsync();
             return Ok();
         }
         catch
