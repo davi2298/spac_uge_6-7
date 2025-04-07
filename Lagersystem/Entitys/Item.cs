@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Lagersystem.Entitys;
 public class Item : AEntity
 {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? ItemId { get; init;}
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string? ItemId { get; init; }
 
     public string Name { get; init; }
     public string? Sku { get; set; }
@@ -14,6 +15,7 @@ public class Item : AEntity
     public string? Description { get; set; }
     public int? Quantity { get; set; }
     public Warehouse? Location { get; set; }
+    [JsonIgnore]
     public Supplier? Supplier { get; set; }
     public float? Price { get; set; }
     public float? Cost { get; set; }
@@ -53,7 +55,7 @@ public class Item : AEntity
 
 public class Dimensions
 {
-    [ForeignKey("Id")]
+    [ForeignKey("Id"), JsonIgnore]
     public Item Item { get; set; }
 
     public float Length { get; set; }

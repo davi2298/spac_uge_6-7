@@ -17,7 +17,6 @@ public class Program
 
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-        var app = builder.Build();
         using (var dbContext = new LagerContext())
         {
             if (EnvReader.Instance.EnvBool("DBDEBUGGING"))
@@ -31,16 +30,21 @@ public class Program
             }
         }
 // return;
+        builder.Services.AddDbContext<LagerContext>();
+
+        builder.Services.AddControllers();
+        // builder.Services.AddMvc().AddJsonOptions(options  );
+
+        var app = builder.Build();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
         }
-        var tmp = builder.Services.AddDbContext<LagerContext>();
 
-        builder.Services.AddControllers();
-
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
+        app.MapControllers();
 
         var summaries = new[]
         {
@@ -103,7 +107,7 @@ public class Program
         while (!context.Warehouses.Any())
         { // todo : do something here
         }
-        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id, (w, l) => new { Warehouse = w, Location = l });
+        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.WarehouseId, l => l.Warehouse.WarehouseId, (w, l) => new { Warehouse = w, Location = l });
         foreach (var warehouse in joinedWarehouses)
         {
             var tmp = warehouse.Location.Item;
