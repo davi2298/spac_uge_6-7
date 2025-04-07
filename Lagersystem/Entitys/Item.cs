@@ -5,8 +5,8 @@ using System.Text.Json.Serialization;
 namespace Lagersystem.Entitys;
 public class Item : AEntity
 {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string? ItemId { get; init;}
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string? ItemId { get; init; }
 
     public string Name { get; init; }
     public string? Sku { get; set; }

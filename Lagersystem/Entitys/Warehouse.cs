@@ -13,8 +13,9 @@ public class Warehouse : AEntity
 
     [InverseProperty("Warehouse")]
     public ICollection<Location> ItemLocations { get; set; } = new List<Location>();
-    public Warehouse()  { }
-    public Warehouse(string id) { 
+    public Warehouse() { }
+    public Warehouse(string id)
+    {
         WarehouseId = id;
     }
     public Warehouse(string id, ICollection<Location> itemLocations) : this(id)
@@ -31,11 +32,11 @@ public class Location
     public string LocationId { get; init; }
 
     [NotNull]
-    [ForeignKey("ItemId"),JsonIgnore]
+    [ForeignKey("ItemId"), JsonIgnore]
     public Item Item { get; set; }
 
-    [ForeignKey("WarehouseId"),NotNull, JsonIgnore]
-    
+    [ForeignKey("WarehouseId"), NotNull, JsonIgnore]
+
     public Warehouse Warehouse { get; set; }
     public string? Aisle { get; set; }
     public string? Shelf { get; set; }
