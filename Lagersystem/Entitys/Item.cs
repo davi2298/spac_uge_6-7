@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lagersystem.Entitys;
 public class Item : AEntity
 {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public string? ItemId { get; init;}
+
     public string Name { get; init; }
     public string? Sku { get; set; }
     public string? Barcode { get; set; }
@@ -19,12 +23,13 @@ public class Item : AEntity
     public DateTime? Date_received { get; set; }
     public DateTime? Last_updated { get; set; }
     public string? Status { get; set; }
-    public Item(string name) : base(null)
+    public Item(string name)
     {
         Name = name;
     }
-    public Item(string id, string name, string sku, string barcode, string category, string description, int quantity, Warehouse location, Supplier supplier, float price, float cost, float weight, Dimensions dimensions, DateTime expiration_date, DateTime date_received, DateTime last_updated, string status) : base(id)
+    public Item(string id, string name, string sku, string barcode, string category, string description, int quantity, Warehouse location, Supplier supplier, float price, float cost, float weight, Dimensions dimensions, DateTime expiration_date, DateTime date_received, DateTime last_updated, string status)
     {
+        ItemId = id;
         Name = name;
         Sku = sku;
         Barcode = barcode;

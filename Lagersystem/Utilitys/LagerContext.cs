@@ -25,20 +25,8 @@ public class LagerContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        setupKeys<Supplier>(modelBuilder);
-        setupKeys<Warehouse>(modelBuilder);
-        setupKeys<Item>(modelBuilder);
-        setupKeys<Location>(modelBuilder);
     }
-    private void setupKeys<T>(ModelBuilder modelBuilder) where T : AEntity
-    {
-        modelBuilder.Entity<T>(entity =>
-                {
-                    entity.HasKey(e => e.Id);
-                    entity.Property(f => f.Id)
-                        .ValueGeneratedOnAdd();
-                });
-    }
+
 
     /// <summary>
     /// Danger zone

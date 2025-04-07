@@ -30,7 +30,7 @@ public class Program
                 Setup(dbContext);
             }
         }
-
+// return;
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
