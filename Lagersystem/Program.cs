@@ -58,7 +58,7 @@ public class Program
             return forecast;
         })
         .WithName("GetWeatherForecast");
-        return;
+        // return;
         app.Run();
 
 
