@@ -3,12 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lagersystem.Entitys;
 
-public abstract class AEntity
+public interface AEntity
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; init;}
-
-    public AEntity(string id){
-        Id = id;
-    }
 }
