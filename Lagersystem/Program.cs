@@ -18,7 +18,6 @@ public class Program
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
         var app = builder.Build();
-        // builder.Services.Configure<LagerContext>(options => options.)
         using (var dbContext = new LagerContext())
         {
             if (EnvReader.Instance.EnvBool("DBDEBUGGING"))
@@ -37,6 +36,9 @@ public class Program
         {
             app.MapOpenApi();
         }
+        var tmp = builder.Services.AddDbContext<LagerContext>();
+
+        builder.Services.AddControllers();
 
         app.UseHttpsRedirection();
 
@@ -58,10 +60,16 @@ public class Program
             return forecast;
         })
         .WithName("GetWeatherForecast");
+
         // return;
+
         app.Run();
 
 
+    }
+    public static void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<LagerContext>();
     }
     record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
     {
@@ -80,14 +88,14 @@ public class Program
         var connectionString = $"server=localhost;database={database};user={dbuser};password={dbpassword}";
         return connectionString;
     }
-
     private static void Setup(LagerContext context)
     {
-        var pathToData = TryGetSolutionDirectoryInfo() + "\\Lagersystem\\Data";
-        AddFromSql(pathToData, "\\item.sql");
-        AddFromSql(pathToData, "\\Supplier.sql");
-        AddFromSql(pathToData, "\\Warehouse.sql");
-        AddFromSql(pathToData, "\\Location.sql");
+        var pathToData = Path.Combine([TryGetSolutionDirectoryInfo().ToString(), "Lagersystem", "Data"]);
+
+        AddFromSql(pathToData, "item.sql");
+        AddFromSql(pathToData, "Supplier.sql");
+        AddFromSql(pathToData, "Warehouse.sql");
+        AddFromSql(pathToData, "Location.sql");
 
 
         context.Items.ToList()
@@ -95,8 +103,10 @@ public class Program
                 i.Supplier = context.Suppliers.ToArray()[Random.Shared.Next(context.Suppliers.Count() - 1)]
             );
 
-        while (!context.Warehouses.Any()) { }
-        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id,(w,l) => new {Warehouse = w,Location =l} );
+        while (!context.Warehouses.Any())
+        { // todo : do something here
+        }
+        var joinedWarehouses = context.Warehouses.Join(context.Locations, w => w.Id, l => l.Warehouse.Id, (w, l) => new { Warehouse = w, Location = l });
         foreach (var warehouse in joinedWarehouses)
         {
             var tmp = warehouse.Location.Item;
@@ -107,17 +117,17 @@ public class Program
 
         static void AddFromSql(string pathToData, string file)
         {
-            if (!File.Exists(pathToData + file))
+            var path = Path.Combine(pathToData, file);
+            if (!File.Exists(path))
                 return;
-            IEnumerable<string> itemLines = File.ReadAllLines(pathToData + file);
-
+            IEnumerable<string> itemLines = File.ReadAllLines(path);
             foreach (var line in itemLines)
             {
                 LagerContext.AddItemFromSQL(line, GetConnectionString());
             }
         }
     }
-    
+
     /// <summary>
     /// This is for when debugging it returns to the folder with the sln and not the debug subfolder
     /// Taken from "https://stackoverflow.com/questions/19001423/getting-path-to-the-parent-folder-of-the-solution-file-using-c-sharp"
