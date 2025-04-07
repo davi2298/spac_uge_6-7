@@ -71,7 +71,7 @@ public class WarehouseController : ControllerBase
         try
         {
             var warehouse = LagerContext.Warehouses.Find(id);
-            if (warehouse == null) { return BadRequest(@"No warehouse with the id: {id}"); }
+            if (warehouse == null) { return BadRequest($"No warehouse with the id: {id}"); }
             LagerContext.Warehouses.Remove(warehouse);
             return Ok();
         }
