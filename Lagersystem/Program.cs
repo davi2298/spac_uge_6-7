@@ -29,10 +29,11 @@ public class Program
                 Setup(dbContext);
             }
         }
-// return;
+        // return;
         builder.Services.AddDbContext<LagerContext>();
 
         builder.Services.AddControllers();
+        builder.Services.AddCors(options => options.AddPolicy(name: "test",policy => {}));
         // builder.Services.AddMvc().AddJsonOptions(options  );
 
         var app = builder.Build();
@@ -64,6 +65,7 @@ public class Program
             return forecast;
         })
         .WithName("GetWeatherForecast");
+        app.MapGet("", () => "Hellow World").RequireCors();
 
         // return;
 

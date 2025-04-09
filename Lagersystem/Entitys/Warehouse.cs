@@ -9,7 +9,7 @@ namespace Lagersystem.Entitys;
 
 public class Warehouse : AEntity
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string WarehouseId { get; init; }
 
     [InverseProperty("Warehouse")]
@@ -45,7 +45,7 @@ public class Location
     [ForeignKey("ItemId"), JsonIgnore, CascadingParameter]
     public Item Item { get; set; }
 
-    [ForeignKey("WarehouseId"), NotNull, JsonIgnore]
+    [ForeignKey("WarehouseId"), NotNull, JsonIgnore, CascadingParameter]
 
     public Warehouse Warehouse { get; set; }
     public string? Aisle { get; set; }

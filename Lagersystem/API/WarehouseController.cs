@@ -51,6 +51,16 @@ public class WarehouseController : ControllerBase
             return BadRequest("Warehouse allready exsists");
         }
     }
+    [HttpPost("AddNewItem/{WarehouseId}")]
+    public async Task<IActionResult> AddItem(Location location, string WarehouseId)
+    {
+        var warehouse = LagerContext.Warehouses.Include(w => w.ItemLocations).Where(w => w.WarehouseId == WarehouseId).First();
+        if (warehouse == null) return NotFound($"Warehouse with {WarehouseId} not found");
+        if (location.Item == null) return Problem("No item in the locathions's data");
+        location.Warehouse = warehouse;
+        warehouse.ItemLocations.Add(location);
+        return Created();
+    }
     [HttpPost("Update/{id}")]
     public async Task<IActionResult> Update(Warehouse warehouse, string id)
     {
