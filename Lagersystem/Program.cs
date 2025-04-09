@@ -2,6 +2,7 @@ using DotEnv.Core;
 using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 public class Program
 {
     public static void Main(string[] args)
@@ -29,11 +30,11 @@ public class Program
                 Setup(dbContext);
             }
         }
-// return;
+        // return;
         builder.Services.AddDbContext<LagerContext>();
+        // builder.Services.AddCors();
 
         builder.Services.AddControllers();
-        // builder.Services.AddMvc().AddJsonOptions(options  );
 
         var app = builder.Build();
 
@@ -44,14 +45,18 @@ public class Program
         }
 
         // app.UseHttpsRedirection();
+        // app.UseRouting();
+
+        // app.UseCors();
+        app.UseStaticFiles();
         app.MapControllers();
-        app.UseCors();
 
         var summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
+        app.MapGet("", () => "Hellow World");//.RequireCors();
         app.MapGet("/weatherforecast", () =>
         {
             var forecast = Enumerable.Range(1, 5).Select(index =>

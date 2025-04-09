@@ -2,11 +2,14 @@ using System.Net;
 using System.Threading.Tasks;
 using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.EntityFrameworkCore;
+// using System.
 
 namespace Lagersystem.API;
 
@@ -19,10 +22,11 @@ public class WarehouseController : ControllerBase
     {
         LagerContext = lagerContext;
     }
-    [HttpGet()]
-    public IEnumerable<Warehouse> GetAll()
+    [HttpGet()]//, EnableCors("")]
+    public IActionResult GetAll()
     {
-        return LagerContext.Warehouses.Include(w => w.ItemLocations).AsEnumerable();
+        Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        return Ok(LagerContext.Warehouses.Include(w => w.ItemLocations).AsEnumerable());
     }
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(string id)
@@ -30,6 +34,7 @@ public class WarehouseController : ControllerBase
         try
         {
             var warehouse = await LagerContext.Warehouses.Include(w => w.ItemLocations).Where(w => w.WarehouseId == id).FirstAsync();
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok(warehouse);
         }
         catch (Exception)
@@ -49,10 +54,13 @@ public class WarehouseController : ControllerBase
         {
             LagerContext.Warehouses.Add(warehouse);
             await LagerContext.SaveChangesAsync();
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+
             return Created();
         }
         catch (Exception ex)
         {
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return BadRequest("Warehouse allready exsists");
         }
     }
@@ -65,10 +73,12 @@ public class WarehouseController : ControllerBase
             if (warehouseToUpdate == null) { return BadRequest($"No Warehouse with id: {id}"); }
             warehouseToUpdate = warehouse;
             await LagerContext.SaveChangesAsync();
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok();
         }
         catch
         {
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Problem($"Culd not update the warehouse with id: {id}");
         }
     }
@@ -92,12 +102,13 @@ public class WarehouseController : ControllerBase
             await LagerContext.SaveChangesAsync();
             LagerContext.Warehouses.Where(w => w.WarehouseId == id).ExecuteDelete();
             await LagerContext.SaveChangesAsync();
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok();
         }
         catch
         {
+            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Problem($"Culd not delete the warehouse with id: {id}");
-
         }
     }
 }
