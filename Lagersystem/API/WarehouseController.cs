@@ -83,16 +83,16 @@ public class WarehouseController : ControllerBase
         try
         {
             var warehouse = LagerContext.Warehouses.Include(w => w.ItemLocations).Where(w => w.WarehouseId == id).First();
-            Console.WriteLine(warehouse);
             if (warehouse == null) { return BadRequest($"No warehouse with the id: {id}"); }
-            warehouse.ItemLocations.Clear();
             // Here we dont await because we can remove the wairhouse while this removes all the referenses to the warehouse
             // The await coms latere
-            var itemRemove = LagerContext.Items.Where(i => i.Location != null && i.Location.WarehouseId == warehouse.WarehouseId).Include(i => i.Location).ForEachAsync(i => i.Location = null);
+            if (warehouse.ItemLocations.Any())
+                await LagerContext.Items.Where(i => i.Location != null && i.Location.WarehouseId == warehouse.WarehouseId).Include(i => i.Location).ForEachAsync(i => i.Location = null);
+            warehouse.ItemLocations.Clear();
             LagerContext.Warehouses.Remove(warehouse);
-            await itemRemove;
             await LagerContext.SaveChangesAsync();
-            return Ok(warehouse);
+            var tmp = LagerContext.Warehouses.First();
+            return Ok();
         }
         catch (Exception e)
         {
