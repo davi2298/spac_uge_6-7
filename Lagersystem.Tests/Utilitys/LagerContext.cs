@@ -22,9 +22,9 @@ public class LagerContextTests //: IDisposable
         var dimension1 = new Dimensions { Width = 15, Height = 15, Length = 15 };
         var dimension2 = new Dimensions { Width = 100, Height = 100, Length = 100 };
         var itemData = new List<Item> {
-            new Item("Item 1") { Id = "0", Dimensions = dimension0},
-            new Item("Item 2") { Id = "1", Dimensions = dimension1},
-            new Item("Item 3") { Id = "2", Dimensions = dimension2},
+            new Item("Item 1") { ItemId = "0", Dimensions = dimension0},
+            new Item("Item 2") { ItemId = "1", Dimensions = dimension1},
+            new Item("Item 3") { ItemId = "2", Dimensions = dimension2},
         }.AsQueryable();
         Mock<DbSet<Item>> mockItems = createDBSet<Item>(itemData);
         var mockContext = new Mock<LagerContext>();
@@ -32,9 +32,9 @@ public class LagerContextTests //: IDisposable
         var context = mockContext.Object;
 
         // When
-        var item0 = context.Items.Where(i => i.Id == "0").First();
-        var item1 = context.Items.Where(i => i.Id == "1").First();
-        var item2 = context.Items.Where(i => i.Id == "2").First();
+        var item0 = context.Items.Where(i => i.ItemId == "0").First();
+        var item1 = context.Items.Where(i => i.ItemId == "1").First();
+        var item2 = context.Items.Where(i => i.ItemId == "2").First();
 
         // Then
 
@@ -49,10 +49,10 @@ public class LagerContextTests //: IDisposable
     {
         // Given
         var itemData = new List<Item> {
-            new Item("Item 0") { Id = "0"},
+            new Item("Item 0") { ItemId = "0"},
         }.AsQueryable();
         var warehouseData = new List<Warehouse>{
-            new Warehouse() { Id = "0",}
+            new Warehouse() { WarehouseId = "0",}
         }.AsQueryable();
 
         Mock<DbSet<Item>> mockItems = createDBSet(itemData);
