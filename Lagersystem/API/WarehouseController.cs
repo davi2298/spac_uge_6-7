@@ -72,14 +72,25 @@ public class WarehouseController : ControllerBase
     {
         try
         {
-            var warehouse = LagerContext.Warehouses.Find(id);
+            var warehouse = LagerContext.Warehouses.Include(w => w.ItemLocations).Where(w => w.WarehouseId == id).First();
+            Console.WriteLine(warehouse);
             if (warehouse == null) { return BadRequest($"No warehouse with the id: {id}"); }
-            LagerContext.Warehouses.Remove(warehouse);
+            foreach (var location in warehouse.ItemLocations)
+            {
+                if (location.Item != null) location.Item.Location = null;
+                location.Item = null;
+                location.Warehouse = null;
+                LagerContext.Locations.Remove(location);      
+            }
+            // warehouse.ItemLocations = null;
+            await LagerContext.SaveChangesAsync();
+            LagerContext.Warehouses.Where(w => w.WarehouseId == id).ExecuteDelete();
             await LagerContext.SaveChangesAsync();
             return Ok();
         }
-        catch
+        catch (Exception e)
         {
+            Console.WriteLine(e);
             return Problem($"Culd not delete the warehouse with id: {id}");
 
         }

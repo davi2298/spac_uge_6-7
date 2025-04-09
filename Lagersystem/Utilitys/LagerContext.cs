@@ -25,6 +25,10 @@ public class LagerContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        // modelBuilder.Entity<Warehouse>()
+        //     .HasMany(x => x.ItemLocations)
+        //     .WithOne(x => x.Warehouse)
+        
     }
 
 
