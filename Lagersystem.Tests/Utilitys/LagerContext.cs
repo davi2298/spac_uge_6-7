@@ -1,4 +1,5 @@
 using Lagersystem.Entitys;
+using Lagersystem.Tests.TestUtils;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 
@@ -26,7 +27,7 @@ public class LagerContextTests //: IDisposable
             new Item("Item 2") { ItemId = "1", Dimensions = dimension1},
             new Item("Item 3") { ItemId = "2", Dimensions = dimension2},
         }.AsQueryable();
-        Mock<DbSet<Item>> mockItems = createDBSet<Item>(itemData);
+        Mock<DbSet<Item>> mockItems = DBMocker.CreateDBSet(itemData);
         var mockContext = new Mock<LagerContext>();
         mockContext.Setup(m => m.Items).Returns(mockItems.Object);
         var context = mockContext.Object;
@@ -55,8 +56,8 @@ public class LagerContextTests //: IDisposable
             new Warehouse() { WarehouseId = "0",}
         }.AsQueryable();
 
-        Mock<DbSet<Item>> mockItems = createDBSet(itemData);
-        Mock<DbSet<Warehouse>> mockWarehous = createDBSet(warehouseData);
+        Mock<DbSet<Item>> mockItems = DBMocker.CreateDBSet(itemData);
+        Mock<DbSet<Warehouse>> mockWarehous = DBMocker.CreateDBSet(warehouseData);
         var mockContext = new Mock<LagerContext>();
         mockContext.Setup(m => m.Items).Returns(mockItems.Object);
         mockContext.Setup(m => m.Warehouses).Returns(mockWarehous.Object);
@@ -76,13 +77,5 @@ public class LagerContextTests //: IDisposable
         Assert.Single(warehouseActual.ItemLocations);
         Assert.Equal(expectedLocation, actualLocation);
     }
-    private static Mock<DbSet<T>> createDBSet<T>(IQueryable<T> itemData) where T : class
-    {
-        var mockItems = new Mock<DbSet<T>>();
-        mockItems.As<IQueryable<T>>().Setup(m => m.Provider).Returns(itemData.Provider);
-        mockItems.As<IQueryable<T>>().Setup(m => m.Expression).Returns(itemData.Expression);
-        mockItems.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(itemData.ElementType);
-        mockItems.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(itemData.GetEnumerator());
-        return mockItems;
-    }
+
 }
