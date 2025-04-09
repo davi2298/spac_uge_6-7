@@ -37,7 +37,7 @@ public class WarehouseController : ControllerBase
             return NotFound($"No warehouse with the id {id}");
         }
     }
-    [HttpPut("Create")]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Create(Warehouse warehouse)
     {
         try
@@ -51,7 +51,7 @@ public class WarehouseController : ControllerBase
             return BadRequest("Warehouse allready exsists");
         }
     }
-    [HttpPost("Update/{id}")]
+    [HttpPost("Create")]
     public async Task<IActionResult> Update(Warehouse warehouse, string id)
     {
         try
@@ -67,7 +67,7 @@ public class WarehouseController : ControllerBase
             return Problem($"Culd not update the warehouse with id: {id}");
         }
     }
-    [HttpDelete("Delete/{id}")]
+    [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         try
@@ -75,6 +75,17 @@ public class WarehouseController : ControllerBase
             var warehouse = LagerContext.Warehouses.Find(id);
             if (warehouse == null) { return BadRequest($"No warehouse with the id: {id}"); }
             LagerContext.Warehouses.Remove(warehouse);
+
+            foreach (var location in warehouse.ItemLocations)
+            {
+                // if (location.Item != null) location.Item.Location = null;
+                // location.Item = null;
+                // location.Warehouse = null;
+                LagerContext.Locations.Remove(location);      
+            }
+            // warehouse.ItemLocations = null;
+            await LagerContext.SaveChangesAsync();
+            LagerContext.Warehouses.Where(w => w.WarehouseId == id).ExecuteDelete();
             await LagerContext.SaveChangesAsync();
             return Ok();
         }
