@@ -37,7 +37,12 @@ public class WarehouseController : ControllerBase
             return NotFound($"No warehouse with the id {id}");
         }
     }
-    [HttpPut("Update/{id}")]
+    [HttpPost("AddNewItem/{WarehouseId}")]
+    public async Task<IActionResult> AddItem(Location location, string WarehouseId)
+    {
+        return NotFound(); // todo
+    }
+    [HttpPost("Create")]
     public async Task<IActionResult> Create(Warehouse warehouse)
     {
         try
@@ -51,7 +56,7 @@ public class WarehouseController : ControllerBase
             return BadRequest("Warehouse allready exsists");
         }
     }
-    [HttpPost("Create")]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(Warehouse warehouse, string id)
     {
         try
@@ -81,7 +86,7 @@ public class WarehouseController : ControllerBase
                 // if (location.Item != null) location.Item.Location = null;
                 // location.Item = null;
                 // location.Warehouse = null;
-                LagerContext.Locations.Remove(location);      
+                LagerContext.Locations.Remove(location);
             }
             // warehouse.ItemLocations = null;
             await LagerContext.SaveChangesAsync();
