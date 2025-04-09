@@ -12,10 +12,10 @@ public class LagerContext : DbContext
 {
 
     // set of entites
-    public DbSet<Supplier> Suppliers { get; private set; }
-    public DbSet<Item> Items { get; private set; }
-    public DbSet<Warehouse> Warehouses { get; private set; }
-    public DbSet<Location> Locations { get; private set; }
+    public virtual DbSet<Supplier> Suppliers { get; set; }
+    public virtual DbSet<Item> Items { get; set; }
+    public virtual DbSet<Warehouse> Warehouses { get; set; }
+    public virtual DbSet<Location> Locations { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = Program.GetConnectionString();

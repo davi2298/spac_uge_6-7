@@ -23,7 +23,16 @@ public class Warehouse : AEntity
         ItemLocations = itemLocations;
     }
 
-
+    public void AddItemLocation(Item item, string aisle, string shelf, string bin)
+    {
+        var newLocation = new Location();
+        newLocation.Warehouse = this;
+        newLocation.Item = item;
+        newLocation.Aisle = aisle;
+        newLocation.Shelf = shelf;
+        newLocation.Bin = bin;
+        ItemLocations.Add(newLocation);
+    }
 }
 
 public class Location
