@@ -6,7 +6,7 @@ namespace Lagersystem.Entitys;
 
 public class Supplier : AEntity
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string? SupplierId { get; init; }
 
     public string Name { get; set; }

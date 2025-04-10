@@ -8,7 +8,7 @@ namespace Lagersystem.Entitys;
 
 public class Warehouse : AEntity
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string WarehouseId { get; init; }
 
     [InverseProperty("Warehouse")]
@@ -37,7 +37,7 @@ public class Warehouse : AEntity
 
 public class Location
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string LocationId { get; init; }
 
     [NotNull]
