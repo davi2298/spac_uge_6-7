@@ -1,13 +1,6 @@
-using System.Net;
-using System.Threading.Tasks;
 using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Server.HttpSys;
 using Microsoft.EntityFrameworkCore;
 // using System.
 
@@ -22,12 +15,14 @@ public class WarehouseController : ControllerBase
     {
         LagerContext = lagerContext;
     }
+
     [HttpGet()]//, EnableCors("")]
     public IActionResult GetAll()
     {
         Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         return Ok(LagerContext.Warehouses.Include(w => w.ItemLocations).AsEnumerable());
     }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAsync(string id)
     {
@@ -42,11 +37,13 @@ public class WarehouseController : ControllerBase
             return NotFound($"No warehouse with the id {id}");
         }
     }
+
     [HttpPost("AddNewItem/{WarehouseId}")]
     public async Task<IActionResult> AddItem(Location location, string WarehouseId)
     {
         return NotFound(); // todo
     }
+
     [HttpPost("Create")]
     public async Task<IActionResult> Create(Warehouse warehouse)
     {
@@ -64,6 +61,7 @@ public class WarehouseController : ControllerBase
             return BadRequest("Warehouse allready exsists");
         }
     }
+
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(Warehouse warehouse, string id)
     {
@@ -82,6 +80,7 @@ public class WarehouseController : ControllerBase
             return Problem($"Culd not update the warehouse with id: {id}");
         }
     }
+
     [HttpGet("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
