@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lagersystem.Entitys;
 
-public interface AEntity
+public interface AEntity<T>
 {
+        public void Update(T entity);
+
 }

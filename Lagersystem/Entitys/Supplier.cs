@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Lagersystem.Entitys;
 
-public class Supplier : AEntity
+public class Supplier : AEntity<Supplier>
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string? SupplierId { get; init; }
@@ -13,6 +13,7 @@ public class Supplier : AEntity
     public string? Contact { get; set; }
     [JsonIgnore]
     public ICollection<Item> Items { get; set; } = new List<Item>();
+    [JsonConstructor]
     public Supplier(string name)
     {
         Name = name;
@@ -23,5 +24,11 @@ public class Supplier : AEntity
         Name = name;
         Contact = contact;
         Items = items;
+    }
+
+    public void Update(Supplier entity)
+    {
+        Contact = entity.Contact ?? Contact;
+        Items = entity.Items ?? Items;
     }
 }

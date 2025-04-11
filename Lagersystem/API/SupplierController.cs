@@ -65,6 +65,24 @@ public class SupplierController : ControllerBase
             return Problem($"Culd not update the supplier with id: {id}");
         }
     }
+    [HttpPost("AddItem/{SupplierId}/{ItemId}")]
+    public async Task<IActionResult> Update(string SupplierId, string ItemId)
+    {
+        try
+        {
+            var supplier = LagerContext.Suppliers.Find(SupplierId);
+            var item = LagerContext.Items.Find(ItemId);
+            if (supplier == null) { return BadRequest($"No Supplier with id: {SupplierId}"); }
+            if (item == null) { return BadRequest($"No Item with id: {ItemId}"); }
+            supplier.Items.Add(item);
+            await LagerContext.SaveChangesAsync();
+            return Ok();
+        }
+        catch
+        {
+            return Problem($"Culd not update the supplier with id: {SupplierId}");
+        }
+    }
 
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
@@ -83,4 +101,5 @@ public class SupplierController : ControllerBase
 
         }
     }
+
 }

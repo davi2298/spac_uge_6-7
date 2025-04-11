@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Lagersystem.Entitys;
 using Lagersystem.Utilitys;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
 
 namespace Lagersystem.API
 {
@@ -38,7 +39,7 @@ namespace Lagersystem.API
         }
 
         // POST: api/Items
-        [HttpPost]
+        [HttpPost(),EnableCors]
         public ActionResult<Item> PostItem(Item item)
         {
             LagerContext.Items.Add(item);
@@ -55,13 +56,15 @@ namespace Lagersystem.API
             {
                 var itemToUpdate = LagerContext.Items.Find(id);
                 if (itemToUpdate == null) { return BadRequest($"No Supplier with id: {id}"); }
-                itemToUpdate = item;
+                itemToUpdate.Update(item);
+                // LagerContext.Items.Update(item);
                 await LagerContext.SaveChangesAsync();
                 return Ok();
             }
-            catch
+            catch(Exception ex)
             {
-                return Problem($"Culd not update the supplier with id: {id}");
+
+                return Problem($"Culd not update the item with id: {id}");
             }
         }
 

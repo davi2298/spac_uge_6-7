@@ -19,7 +19,6 @@ public class WarehouseController : ControllerBase
     [HttpGet()]//, EnableCors("")]
     public IActionResult GetAll()
     {
-        Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         return Ok(LagerContext.Warehouses.Include(w => w.ItemLocations).AsEnumerable());
     }
 
@@ -29,7 +28,6 @@ public class WarehouseController : ControllerBase
         try
         {
             var warehouse = await LagerContext.Warehouses.Include(w => w.ItemLocations).Where(w => w.WarehouseId == id).FirstAsync();
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok(warehouse);
         }
         catch (Exception)
@@ -46,13 +44,11 @@ public class WarehouseController : ControllerBase
         {
             LagerContext.Warehouses.Add(warehouse);
             await LagerContext.SaveChangesAsync();
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
 
             return Created();
         }
         catch (Exception ex)
         {
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return BadRequest("Warehouse allready exsists");
         }
     }
@@ -77,12 +73,10 @@ public class WarehouseController : ControllerBase
             if (warehouseToUpdate == null) { return BadRequest($"No Warehouse with id: {id}"); }
             warehouseToUpdate = warehouse;
             await LagerContext.SaveChangesAsync();
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok();
         }
         catch
         {
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Problem($"Culd not update the warehouse with id: {id}");
         }
     }
@@ -112,12 +106,10 @@ public class WarehouseController : ControllerBase
             await LagerContext.SaveChangesAsync();
             LagerContext.Warehouses.Where(w => w.WarehouseId == id).ExecuteDelete();
             await LagerContext.SaveChangesAsync();
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Ok();
         }
         catch (Exception e)
         {
-            Response.Headers.Add("Access-Control-Allow-Credentials", "true");
             return Problem($"Culd not delete the warehouse with id: {id}");
         }
     }

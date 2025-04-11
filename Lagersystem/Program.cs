@@ -35,7 +35,7 @@ public class Program
         // builder.Services.AddCors();
 
         builder.Services.AddControllers();
-        builder.Services.AddCors();
+        builder.Services.AddCors(options => options.AddDefaultPolicy(p => p.AllowAnyMethod().AllowAnyOrigin()));
         // builder.Services.AddMvc().AddJsonOptions(options  );
 
         var app = builder.Build();
@@ -58,7 +58,6 @@ public class Program
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        app.MapGet("", () => "Hellow World");//.RequireCors();
         app.MapGet("/weatherforecast", () =>
         {
             var forecast = Enumerable.Range(1, 5).Select(index =>

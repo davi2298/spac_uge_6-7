@@ -3,11 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Lagersystem.Entitys;
-public class Item : AEntity
+public class Item : AEntity<Item>
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string? ItemId { get; init; }
-
     public string Name { get; init; }
     public string? Sku { get; set; }
     public string? Barcode { get; set; }
@@ -25,6 +24,7 @@ public class Item : AEntity
     public DateTime? Date_received { get; set; }
     public DateTime? Last_updated { get; set; }
     public string? Status { get; set; }
+    [JsonConstructor]
     public Item(string name)
     {
         Name = name;
@@ -49,6 +49,28 @@ public class Item : AEntity
         Last_updated = last_updated;
         Status = status;
     }
+
+    public void Update(Item entity)
+    {
+        // todo: do some sanaty cheks on item
+        Sku = entity.Sku ?? Sku;
+        Barcode = entity.Barcode ?? Barcode;
+        Category = entity.Category ?? Category;
+        Description = entity.Description ?? Description;
+        Quantity = entity.Quantity ?? Quantity;
+        Location = entity.Location ?? Location;
+        Supplier = entity.Supplier ?? Supplier;
+        Price = entity.Price ?? Price;
+        Cost = entity.Cost ?? Cost;
+        Weight = entity.Weight ?? Weight;
+        Dimensions = entity.Dimensions ?? Dimensions;
+        Expiration_date = entity.Expiration_date ?? Expiration_date;
+        Date_received = entity.Date_received ?? Date_received;
+        Last_updated = entity.Last_updated ?? Last_updated;
+        Status = entity.Status ?? Status;
+    }
+
+
 }
 
 
