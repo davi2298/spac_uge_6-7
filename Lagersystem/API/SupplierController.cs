@@ -44,6 +44,7 @@ public class SupplierController : ControllerBase
         }
         catch (Exception ex)
         {
+            //todo som loging of ex
             return BadRequest("Supplier allready exsists");
         }
     }
@@ -55,6 +56,7 @@ public class SupplierController : ControllerBase
         {
             var supplierToUpdate = LagerContext.Suppliers.Find(id);
             if (supplierToUpdate == null) { return BadRequest($"No Supplier with id: {id}"); }
+            supplierToUpdate = supplier;
             await LagerContext.SaveChangesAsync();
             return Ok();
         }
