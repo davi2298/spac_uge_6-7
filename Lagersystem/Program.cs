@@ -35,6 +35,8 @@ public class Program
         // builder.Services.AddCors();
 
         builder.Services.AddControllers();
+        builder.Services.AddCors();
+        // builder.Services.AddMvc().AddJsonOptions(options  );
 
         var app = builder.Build();
 
@@ -47,8 +49,8 @@ public class Program
         // app.UseHttpsRedirection();
         // app.UseRouting();
 
-        // app.UseCors();
-        app.UseStaticFiles();
+        app.UseCors();
+        // app.UseStaticFiles();
         app.MapControllers();
 
         var summaries = new[]
@@ -70,6 +72,7 @@ public class Program
             return forecast;
         })
         .WithName("GetWeatherForecast");
+        app.MapGet("", () => "Hellow World").RequireCors();
 
         // return;
 
