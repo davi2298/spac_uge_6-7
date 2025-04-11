@@ -38,7 +38,7 @@ public class Warehouse : AEntity
 
 public class Location
 {
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string LocationId { get; init; }
 
     [NotNull]
