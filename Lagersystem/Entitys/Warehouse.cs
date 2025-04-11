@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lagersystem.Entitys;
 
-public class Warehouse : AEntity
+public class Warehouse : AEntity<Warehouse>
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), MaxLength(36)]
     public string WarehouseId { get; init; }
@@ -33,6 +33,11 @@ public class Warehouse : AEntity
         newLocation.Shelf = shelf;
         newLocation.Bin = bin;
         ItemLocations.Add(newLocation);
+    }
+
+    public void Update(Warehouse entity)
+    {
+        throw new NotSupportedException();
     }
 }
 
