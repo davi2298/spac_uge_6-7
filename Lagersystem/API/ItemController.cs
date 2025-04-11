@@ -44,37 +44,25 @@ namespace Lagersystem.API
             LagerContext.Items.Add(item);
             LagerContext.SaveChanges();
 
-            return CreatedAtAction(nameof(GetItem), new { id = item.ItemId }, item);
+            return Created();
         }
 
         // PUT: api/Items/5
         [HttpPut("{id}")]
-        public IActionResult PutItem(string id, Item item)
+        public async Task<IActionResult> PutItemAsync(string id, Item item)
         {
-            if (id != item.ItemId)
-            {
-                return BadRequest();
-            }
-
-            LagerContext.Entry(item).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-
             try
             {
-                LagerContext.SaveChanges();
+                var itemToUpdate = LagerContext.Items.Find(id);
+                if (itemToUpdate == null) { return BadRequest($"No Supplier with id: {id}"); }
+                itemToUpdate = item;
+                await LagerContext.SaveChangesAsync();
+                return Ok();
             }
-            catch (DbUpdateConcurrencyException)
+            catch
             {
-                if (!LagerContext.Items.Any(e => e.ItemId == id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return Problem($"Culd not update the supplier with id: {id}");
             }
-
-            return NoContent();
         }
 
         // DELETE: api/Items/5
