@@ -33,7 +33,7 @@ public class Program
         builder.Services.AddDbContext<LagerContext>();
 
         builder.Services.AddControllers();
-        builder.Services.AddCors(options => options.AddPolicy(name: "test",policy => {}));
+        builder.Services.AddCors();
         // builder.Services.AddMvc().AddJsonOptions(options  );
 
         var app = builder.Build();
@@ -45,6 +45,7 @@ public class Program
         }
 
         // app.UseHttpsRedirection();
+        app.UseCors();
         app.MapControllers();
 
         var summaries = new[]
