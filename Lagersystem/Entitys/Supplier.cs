@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Lagersystem.Entitys;
 
@@ -10,6 +11,7 @@ public class Supplier : AEntity
 
     public string Name { get; set; }
     public string? Contact { get; set; }
+    [JsonIgnore]
     public ICollection<Item> Items { get; set; } = new List<Item>();
     public Supplier(string name)
     {
